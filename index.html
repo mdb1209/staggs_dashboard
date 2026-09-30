@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Region Admit Budget 2026</title>
+<meta name="description" content="2026 episodic admit goals, pacing and projections for the North Region branches.">
+<meta property="og:title" content="North Region Admit Budget 2026">
+<meta property="og:description" content="Episodic admit goals, admits needed per day and a projection calculator for Pampa, Plainview, Midland, Woodward, Amarillo, Lubbock and Clovis.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%23FF3E8A%22/%3E%3Crect x=%2220%22 y=%2255%22 width=%2214%22 height=%2225%22 rx=%224%22 fill=%22%23fff%22/%3E%3Crect x=%2243%22 y=%2238%22 width=%2214%22 height=%2242%22 rx=%224%22 fill=%22%23FFC928%22/%3E%3Crect x=%2266%22 y=%2222%22 width=%2214%22 height=%2258%22 rx=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --pink:#FF3E8A; --blue:#2F6BFF; --sun:#FFC928; --teal:#00BFA6; --orange:#FF7A1A; --grape:#8B3DFF;
+  --ink:#1E1B3A; --ink2:#5B5877; --bg:#FFF7EC; --card:#FFFFFF; --line:#F0E6D8;
+  --shadow:0 6px 0 rgba(30,27,58,.08), 0 10px 30px rgba(30,27,58,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:14px;line-height:1.45;
+  background-image:radial-gradient(var(--sun) 1.5px,transparent 1.5px),radial-gradient(var(--pink) 1.5px,transparent 1.5px);
+  background-size:46px 46px,46px 46px;background-position:0 0,23px 23px;background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;background:rgba(255,247,236,.86);z-index:-1}
+h1,h2,h3,.num,.fredoka{font-family:'Fredoka',sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 16px 28px}
+
+/* header */
+.hero{background:linear-gradient(110deg,var(--grape) 0%,var(--pink) 55%,var(--orange) 100%);border-radius:24px;padding:20px 24px;color:#fff;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,201,40,.35)}
+.hero h1{font-size:clamp(22px,3.2vw,34px);font-weight:700;letter-spacing:.2px;position:relative;z-index:1}
+.hero .sub{font-weight:700;opacity:.95;position:relative;z-index:1}
+.eyebrow{display:inline-block;background:var(--sun);color:var(--ink);font-family:'Fredoka';font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px;margin-bottom:6px;letter-spacing:.5px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;position:relative;z-index:1}
+.controls label{display:flex;flex-direction:column;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+select,input{font-family:'Nunito';font-weight:700;font-size:14px;color:var(--ink);background:#fff;border:2px solid transparent;border-radius:12px;padding:7px 10px;margin-top:3px;min-width:0}
+select:focus,input:focus{outline:none;border-color:var(--sun)}
+
+/* grid */
+.grid{display:grid;gap:14px;margin-top:14px;grid-template-columns:repeat(12,1fr)}
+.card{background:var(--card);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow);border:2px solid var(--line);min-width:0}
+.card h2{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.card h2 .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.span3{grid-column:span 3}.span4{grid-column:span 4}.span5{grid-column:span 5}.span7{grid-column:span 7}.span12{grid-column:span 12}
+
+/* KPI tiles */
+.kpi{border:none;color:#fff;position:relative;overflow:hidden}
+.kpi .lab{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.8px;opacity:.95}
+.kpi .num{font-size:40px;font-weight:700;line-height:1.05;margin:4px 0 2px}
+.kpi .meta{font-weight:700;font-size:13px;opacity:.95}
+.kpi .pill{display:inline-block;background:rgba(255,255,255,.25);border-radius:99px;padding:2px 9px;margin-top:6px;font-weight:800;font-size:12px}
+.kpi::after{content:"";position:absolute;right:-26px;bottom:-26px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.16)}
+.k-med{background:var(--blue)} .k-oth{background:var(--pink)} .k-tot{background:linear-gradient(135deg,var(--grape),var(--orange))} .k-day{background:var(--teal)}
+
+/* table */
+table{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:13.5px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink2);text-align:right;padding:0 8px;font-weight:800}
+th:first-child,td:first-child{text-align:left}
+td{background:#FFFBF4;padding:7px 8px;text-align:right;font-weight:700}
+td:first-child{border-radius:12px 0 0 12px;font-family:'Fredoka';font-weight:600;font-size:15px}
+td:last-child{border-radius:0 12px 12px 0}
+tr.sel td{background:#FFF1C2}
+tr.totrow td{background:var(--ink);color:#fff}
+.small{font-size:11px;color:var(--ink2);font-weight:600}
+tr.totrow .small{color:#cfcbe6}
+.bar{height:8px;border-radius:99px;background:#F3ECE2;overflow:hidden;display:flex;min-width:60px}
+.bar i{display:block;height:100%}
+.tag{font-family:'Fredoka';font-weight:600;font-size:15px}
+.c-med{color:var(--blue)}.c-oth{color:var(--pink)}.c-tot{color:var(--grape)}
+tr.totrow .c-med,tr.totrow .c-oth,tr.totrow .c-tot{color:#fff}
+.tscroll{overflow-x:auto}
+
+/* chart */
+.chartbox{position:relative;height:270px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pl{font-family:'Fredoka';font-weight:600;font-size:13px;border:2px solid var(--line);background:#FFFBF4;color:var(--ink2);border-radius:99px;padding:5px 12px;cursor:pointer}
+.pl:hover{border-color:var(--sun)}
+.pl.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-weight:700;font-size:12px;margin-bottom:6px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+/* calculator */
+.calc-in{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.calc-in label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ink2);display:flex;flex-direction:column}
+.calc-in input{border:2px solid var(--line);background:#FFFBF4}
+.calc-in input:focus{border-color:var(--pink)}
+.calc-out{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cbox{border-radius:16px;padding:12px;background:#FFFBF4;border:2px solid var(--line)}
+.cbox h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.row{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:13px;padding:2px 0}
+.row b{font-family:'Fredoka';font-weight:600}
+.big{font-family:'Fredoka';font-weight:700;font-size:30px;line-height:1.1}
+.status{display:inline-block;margin-top:8px;border-radius:99px;padding:3px 10px;font-weight:800;font-size:12px;color:#fff}
+.s-good{background:var(--teal)}.s-warn{background:var(--orange)}.s-bad{background:var(--pink)}.s-na{background:#A9A5C2}
+.prog{height:10px;border-radius:99px;background:#F3ECE2;overflow:hidden;margin:6px 0 4px}
+.prog i{display:block;height:100%;border-radius:99px}
+.b-med{border-top:6px solid var(--blue)}.b-oth{border-top:6px solid var(--pink)}.b-tot{border-top:6px solid var(--grape)}
+.note{margin-top:12px;background:#EAFBF7;border:2px dashed var(--teal);border-radius:14px;padding:9px 12px;font-size:12.5px;font-weight:600;color:#0d5f53}
+.foot{margin-top:14px;text-align:center;font-size:11.5px;color:var(--ink2);font-weight:600}
+
+@media (max-width:1000px){.span3{grid-column:span 6}.span4,.span5,.span7{grid-column:span 12}}
+@media (max-width:600px){.span3{grid-column:span 12}.calc-in,.calc-out{grid-template-columns:1fr}.kpi .num{font-size:34px}.hero{padding:16px}}
+@media print{body::before,body{background:#fff}.wrap{max-width:none;padding:0}.card,.hero{box-shadow:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:landscape;margin:.3in}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <span class="eyebrow">2026 EPISODIC ADMIT BUDGET</span>
+      <h1>Jennifer Staggs - North Region</h1>
+      <div class="sub">Pampa · Plainview · Midland · Woodward · Amarillo · Lubbock · Clovis</div>
+    </div>
+    <div class="controls">
+      <label>Branch<select id="branch"></select></label>
+      <label>View<select id="ptype">
+        <option value="month">Month</option><option value="quarter">Quarter</option><option value="year">Annual</option>
+      </select></label>
+      <label id="pwrap">Period<select id="pval"></select></label>
+    </div>
+  </header>
+
+  <section class="grid">
+    <div class="card kpi k-med span3">
+      <div class="lab">Medicare Goal</div>
+      <div class="num" id="kMed">0</div>
+      <div class="meta" id="kMedM"></div>
+    </div>
+    <div class="card kpi k-oth span3">
+      <div class="lab">Other Episodic Goal</div>
+      <div class="num" id="kOth">0</div>
+      <div class="meta" id="kOthM"></div>
+    </div>
+    <div class="card kpi k-tot span3">
+      <div class="lab">Total Episodic Goal</div>
+      <div class="num" id="kTot">0</div>
+      <div class="meta" id="kTotM"></div>
+    </div>
+    <div class="card kpi k-day span3">
+      <div class="lab">Admits Needed / Day</div>
+      <div class="num" id="kDay">0</div>
+      <div class="meta" id="kDayM"></div>
+    </div>
+
+    <div class="card span5">
+      <h2><span class="dot" style="background:var(--sun)"></span><span id="tblTitle">Branch Goals</span></h2>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Branch</th><th>Medicare</th><th>Other Epi</th><th>Total</th><th>Per Day</th><th style="text-align:left">Mix</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card span7">
+      <h2><span class="dot" style="background:var(--blue)"></span><span id="chartTitle">Monthly Goals</span></h2>
+      <div class="pills" id="modePills">
+        <button type="button" class="pl on" aria-pressed="true" data-m="split">Medicare + Other</button>
+        <button type="button" class="pl" aria-pressed="false" data-m="med">Medicare</button>
+        <button type="button" class="pl" aria-pressed="false" data-m="oth">Other Episodic</button>
+        <button type="button" class="pl" aria-pressed="false" data-m="tot">Total Episodic</button>
+      </div>
+      <div class="legend">
+        <span class="lg-med"><i style="background:var(--blue)"></i>Medicare</span>
+        <span class="lg-oth"><i style="background:var(--pink)"></i>Other Episodic</span>
+        <span class="lg-tot" style="display:none"><i style="background:var(--grape)"></i>Total Episodic</span>
+        <span><i style="background:var(--sun)"></i>Selected period</span>
+        <span>🦃🎄 Nov-Dec holiday slowdown</span>
+      </div>
+      <div class="chartbox"><canvas id="chart"></canvas></div>
+    </div>
+
+    <div class="card span12">
+      <h2><span class="dot" style="background:var(--pink)"></span>Projection Calculator <span class="small" id="calcScope" style="margin-left:6px"></span></h2>
+      <div class="calc-in">
+        <label>Admits counted through<input type="date" id="asOf" min="2026-01-01" max="2026-12-31"></label>
+        <label>Medicare admits so far<input type="number" id="aMed" min="0" step="1" placeholder="0" inputmode="numeric"></label>
+        <label>Other Episodic admits so far<input type="number" id="aOth" min="0" step="1" placeholder="0" inputmode="numeric"></label>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:-4px 0 10px"><span class="small">Entries are saved in this browser for each branch and period.</span><button type="button" class="pl" id="clearBtn">Clear entries</button></div>
+      <div class="calc-out" id="calcOut"></div>
+      <div class="note" id="note"></div>
+    </div>
+  </section>
+
+  <div class="foot">Source: TX North Financials Budget Final 2026, KPIs section (P1500 Medicare admits + P1530 Other Episodic admits). Midland = formerly Odessa. Per-day pace uses Mon-Fri business days, minus company holidays.</div>
+</div>
+
+<script>
+const DATA = {"Pampa":{"med":[11,10,10,10,11,9,9,10,9,11,10,10],"oth":[7,7,7,4,7,6,7,5,6,6,5,6]},"Plainview":{"med":[5,4,4,4,5,4,4,4,3,5,3,5],"oth":[6,7,7,5,8,6,7,5,6,6,5,5]},"Midland":{"med":[14,11,12,10,12,10,10,11,10,11,11,12],"oth":[5,12,13,11,13,11,12,11,12,12,10,9]},"Woodward":{"med":[16,13,13,11,13,12,12,13,12,12,12,13],"oth":[2,2,2,1,2,0,2,0,1,2,0,0]},"Amarillo":{"med":[43,40,41,38,39,37,38,41,39,38,41,40],"oth":[22,25,27,22,25,24,26,24,25,24,24,24]},"Lubbock":{"med":[14,11,12,11,12,10,10,11,10,11,9,12],"oth":[22,28,31,24,28,26,29,27,28,27,26,26]},"Clovis":{"med":[7,6,5,5,7,5,5,6,5,7,5,6],"oth":[5,5,5,3,5,4,5,3,4,4,4,4]}};
+const BRANCHES = Object.keys(DATA);
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const HOLIDAY_DIP = 0.10;              // Nov-Dec admit capacity is ~10% lower
+const HOLIDAY_MONTHS = [10,11];        // Nov, Dec (0-indexed)
+const YEAR = 2026;
+// Company holidays (no admit days counted)
+const OFF = new Set(['2026-01-01','2026-05-25','2026-07-03','2026-09-07','2026-11-26','2026-11-27','2026-12-24','2026-12-25']);
+
+// region total
+DATA['All'] = {med:Array(12).fill(0), oth:Array(12).fill(0)};
+BRANCHES.forEach(b=>{for(let i=0;i<12;i++){DATA.All.med[i]+=DATA[b].med[i];DATA.All.oth[i]+=DATA[b].oth[i];}});
+
+const pad = n => String(n).padStart(2,'0');
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const fmt = (n,dp=0) => Number.isFinite(n) ? n.toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp}) : '-';
+
+// every admit day in 2026 with its weight
+const DAYS = [];
+for(let d=new Date(YEAR,0,1); d.getFullYear()===YEAR; d.setDate(d.getDate()+1)){
+  const wd=d.getDay(); const s=iso(d);
+  if(wd===0||wd===6||OFF.has(s)) continue;
+  DAYS.push({iso:s, m:d.getMonth(), w: HOLIDAY_MONTHS.includes(d.getMonth()) ? 1-HOLIDAY_DIP : 1});
+}
+
+const $ = id => document.getElementById(id);
+const bSel=$('branch'), pType=$('ptype'), pVal=$('pval');
+bSel.innerHTML = '<option value="All">All Branches</option>' + BRANCHES.map(b=>`<option>${b}</option>`).join('');
+
+const today = new Date();
+const curM = today.getFullYear()===YEAR ? today.getMonth() : 0;
+
+function fillPeriods(){
+  const t=pType.value;
+  if(t==='month'){ pVal.innerHTML = MONTHS_FULL.map((m,i)=>`<option value="${i}">${m}</option>`).join(''); pVal.value=curM; }
+  else if(t==='quarter'){ pVal.innerHTML = [1,2,3,4].map(q=>`<option value="${q-1}">Q${q}</option>`).join(''); pVal.value=Math.floor(curM/3); }
+  else { pVal.innerHTML='<option value="0">Full Year 2026</option>'; }
+  $('pwrap').style.display = t==='year' ? 'none' : '';
+}
+function periodMonths(){
+  const t=pType.value, v=+pVal.value;
+  if(t==='month') return [v];
+  if(t==='quarter') return [v*3,v*3+1,v*3+2];
+  return [...Array(12).keys()];
+}
+function periodLabel(){
+  const t=pType.value, v=+pVal.value;
+  return t==='month' ? MONTHS_FULL[v] : t==='quarter' ? `Q${v+1}` : '2026';
+}
+function goals(b, months){
+  const med=months.reduce((s,m)=>s+DATA[b].med[m],0), oth=months.reduce((s,m)=>s+DATA[b].oth[m],0);
+  return {med,oth,tot:med+oth};
+}
+function periodDays(months){ return DAYS.filter(d=>months.includes(d.m)); }
+const wsum = arr => arr.reduce((s,d)=>s+d.w,0);
+function hasHoliday(days){ return days.some(d=>d.w<1); }
+
+function countUp(el,to,dp=0){
+  const from = +el.dataset.v || 0; el.dataset.v = to;
+  const t0=performance.now(), dur=450;
+  (function step(t){const p=Math.min(1,(t-t0)/dur); el.textContent=fmt(from+(to-from)*(1-Math.pow(1-p,3)),dp); if(p<1) requestAnimationFrame(step);})(t0);
+}
+
+let chart, chartMode='split';
+const STORE_KEY='nr_budget_2026_entries';
+let SAVED={}; try{ SAVED=JSON.parse(localStorage.getItem(STORE_KEY)||'{}')||{}; }catch(e){ SAVED={}; }
+const entryKey = () => `${bSel.value}|${pType.value}|${pVal.value}`;
+function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(SAVED)); }catch(e){} }
+function loadEntry(){
+  const e = SAVED[entryKey()] || {};
+  $('aMed').value = e.med ?? ''; $('aOth').value = e.oth ?? ''; $('asOf').value = e.asOf || '';
+}
+function saveEntry(){
+  const med=$('aMed').value, oth=$('aOth').value;
+  if(med===''&&oth===''){ delete SAVED[entryKey()]; } else { SAVED[entryKey()]={med,oth,asOf:$('asOf').value}; }
+  persist();
+}
+function cleanNum(el){ if(el.value==='') return; let v=Math.floor(Math.abs(+el.value)); if(!Number.isFinite(v)) v=0; if(String(v)!==el.value) el.value=v; }
+document.querySelectorAll('#modePills .pl').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('#modePills .pl').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-pressed','false');});
+  btn.classList.add('on'); btn.setAttribute('aria-pressed','true'); chartMode=btn.dataset.m; render();
+}));
+function render(){
+  const b=bSel.value, months=periodMonths(), lbl=periodLabel();
+  const g=goals(b,months), days=periodDays(months), W=wsum(days);
+  const normalPace = g.tot / W;
+  const holi = hasHoliday(days);
+  const who = b==='All' ? 'Region' : b;
+
+  countUp($('kMed'),g.med); countUp($('kOth'),g.oth); countUp($('kTot'),g.tot); countUp($('kDay'),normalPace,1);
+  $('kMedM').textContent = `${who} · ${lbl} · ${fmt(g.med/W,1)}/day`;
+  $('kOthM').textContent = `${who} · ${lbl} · ${fmt(g.oth/W,1)}/day`;
+  $('kTotM').innerHTML = `${who} · ${lbl}<br><span class="pill">Medicare ${fmt(g.tot? g.med/g.tot*100:0)}% · Other ${fmt(g.tot? g.oth/g.tot*100:0)}%</span>`;
+  $('kDayM').innerHTML = `${days.length} business days` + (holi ? `<br><span class="pill">🎄 Holiday days: ${fmt(normalPace*(1-HOLIDAY_DIP),1)}/day</span>` : `<br><span class="pill">Total episodic, per business day</span>`);
+
+  // table
+  $('tblTitle').textContent = `Branch Goals · ${lbl}`;
+  const rows = BRANCHES.map(x=>({x,...goals(x,months)}));
+  const maxT = Math.max(...rows.map(r=>r.tot));
+  let h = rows.map(r=>`<tr class="${r.x===b?'sel':''}"><td>${r.x}${r.x==='Midland'?' <span class="small">(Odessa)</span>':''}</td>
+    <td class="tag c-med">${fmt(r.med)}</td><td class="tag c-oth">${fmt(r.oth)}</td><td class="tag c-tot">${fmt(r.tot)}</td>
+    <td>${fmt(r.tot/W,1)}</td>
+    <td><div class="bar" style="width:${Math.max(18,r.tot/maxT*100)}%"><i style="width:${r.tot?r.med/r.tot*100:0}%;background:var(--blue)"></i><i style="width:${r.tot?r.oth/r.tot*100:0}%;background:var(--pink)"></i></div></td></tr>`).join('');
+  const T=goals('All',months);
+  h += `<tr class="totrow ${b==='All'?'sel':''}"><td>Region Total</td><td class="tag c-med">${fmt(T.med)}</td><td class="tag c-oth">${fmt(T.oth)}</td><td class="tag c-tot">${fmt(T.tot)}</td><td>${fmt(T.tot/W,1)}</td><td class="small">${days.length} biz days</td></tr>`;
+  $('tbody').innerHTML = h;
+
+  // chart
+  $('chartTitle').textContent = `${b==='All'?'Region':b} Monthly Goals · 2026`;
+  const sel = i => months.includes(i);
+  const medCol = MONTHS.map((_,i)=> sel(i)?'#2F6BFF':'rgba(47,107,255,.28)');
+  const othCol = MONTHS.map((_,i)=> sel(i)?'#FF3E8A':'rgba(255,62,138,.28)');
+  const labels = MONTHS.map((m,i)=> i===10?'Nov 🦃': i===11?'Dec 🎄': m);
+  const totCol = MONTHS.map((_,i)=> sel(i)?'#8B3DFF':'rgba(139,61,255,.28)');
+  const totData = DATA[b].med.map((v,i)=>v+DATA[b].oth[i]);
+  const mk = (label,data,bg)=>({label,data,backgroundColor:bg,borderRadius:6,stack:'s',borderSkipped:false});
+  const ds = chartMode==='med' ? [mk('Medicare',DATA[b].med,medCol)]
+           : chartMode==='oth' ? [mk('Other Episodic',DATA[b].oth,othCol)]
+           : chartMode==='tot' ? [mk('Total Episodic',totData,totCol)]
+           : [mk('Medicare',DATA[b].med,medCol), mk('Other Episodic',DATA[b].oth,othCol)];
+  const modeName = {split:'Monthly Goals',med:'Medicare Goals',oth:'Other Episodic Goals',tot:'Total Episodic Goals'}[chartMode];
+  $('chartTitle').textContent = `${b==='All'?'Region':b} ${modeName} · 2026`;
+  document.querySelector('.lg-med').style.display = (chartMode==='split'||chartMode==='med')?'':'none';
+  document.querySelector('.lg-oth').style.display = (chartMode==='split'||chartMode==='oth')?'':'none';
+  document.querySelector('.lg-tot').style.display = chartMode==='tot'?'':'none';
+  if(typeof Chart==='undefined'){
+    if($('chart')) $('chart').parentElement.innerHTML='<p class="small" style="padding:20px">Chart needs an internet connection to load. Everything else works offline.</p>';
+  } else if(!chart){
+    chart = new Chart($('chart'),{type:'bar',data:{labels,datasets:ds},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:450},layout:{padding:{top:18}},
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#1E1B3A',titleFont:{family:'Fredoka',size:14},bodyFont:{family:'Nunito',weight:'700'},padding:10,cornerRadius:10,
+          callbacks:{footer:items=>'Total: '+items.reduce((s,i)=>s+i.parsed.y,0)}}},
+        scales:{x:{stacked:true,grid:{display:false},ticks:{font:{family:'Fredoka',size:12},color:'#5B5877'}},
+                y:{stacked:true,beginAtZero:true,grid:{color:'#F3ECE2'},ticks:{font:{family:'Nunito',weight:'700'},color:'#5B5877',precision:0}}}},
+      plugins:[{id:'hl',beforeDatasetsDraw(c){const {ctx,chartArea:a,scales:{x}}=c; const ms=periodMonths(); const w=x.getPixelForValue(1)-x.getPixelForValue(0);
+        ctx.save(); ctx.fillStyle='rgba(255,201,40,.22)'; ms.forEach(m=>{const cx=x.getPixelForValue(m); ctx.beginPath(); ctx.roundRect(cx-w/2+2,a.top,w-4,a.bottom-a.top,10); ctx.fill();}); ctx.restore();}},
+      {id:'topvals',afterDatasetsDraw(c){const {ctx}=c; const n=c.data.datasets.length; const last=c.getDatasetMeta(n-1);
+        ctx.save(); ctx.font='600 12px Fredoka, sans-serif'; ctx.fillStyle='#1E1B3A'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+        last.data.forEach((bar,i)=>{const v=c.data.datasets.reduce((s,d)=>s+(d.data[i]||0),0); ctx.fillText(v,bar.x,bar.y-3);}); ctx.restore();}}]
+    });
+  } else {
+    chart.data.labels=labels; chart.data.datasets=ds; chart.update();
+  }
+  loadEntry();
+  calc();
+}
+
+function calc(){
+  const b=bSel.value, months=periodMonths(), lbl=periodLabel();
+  const g=goals(b,months), days=periodDays(months);
+  const who = b==='All' ? 'All Branches' : b;
+  $('calcScope').textContent = `${who} · ${lbl}`;
+
+  // clamp as-of date into period
+  const first=days[0].iso, last=days[days.length-1].iso;
+  const pStart = `${YEAR}-${pad(months[0]+1)}-01`;
+  const lastM = months[months.length-1]; const pEnd = iso(new Date(YEAR,lastM+1,0));
+  let asOf=$('asOf').value || iso(today);
+  if(asOf<pStart) asOf=pStart; if(asOf>pEnd) asOf=pEnd;
+  $('asOf').value=asOf; $('asOf').min=pStart; $('asOf').max=pEnd;
+
+  const done = days.filter(d=>d.iso<=asOf), left = days.filter(d=>d.iso>asOf);
+  const Wd=wsum(done), Wl=wsum(left), holiLeft=hasHoliday(left), normLeft=left.some(d=>d.w===1);
+  const aMed=Math.max(0,+$('aMed').value||0), aOth=Math.max(0,+$('aOth').value||0);
+  const entered = $('aMed').value!=='' || $('aOth').value!=='';
+
+  const box = (key,title,goal,act,cls,col) => {
+    const rem = goal-act;
+    const needN = Wl>0 ? Math.max(0,rem)/Wl : NaN;           // per normal business day
+    const needH = needN*(1-HOLIDAY_DIP);                       // per holiday-period day
+    const proj = Wd>0 ? act + (act/Wd)*Wl : NaN;
+    const pctGoal = goal>0 ? act/goal*100 : 0;
+    const pctProj = goal>0 && Number.isFinite(proj) ? proj/goal*100 : NaN;
+    let st='s-na', stT='Enter admits to project';
+    if(entered){
+      if(rem<=0){st='s-good';stT='🎉 Goal hit!';}
+      else if(!Wl){st='s-bad';stT=`Finished ${fmt(rem)} short`;}
+      else if(!Number.isFinite(pctProj)){st='s-na';stT='Period just started';}
+      else if(pctProj>=100){st='s-good';stT=`On pace · ${fmt(pctProj)}% of goal`;}
+      else if(pctProj>=90){st='s-warn';stT=`Close · ${fmt(pctProj)}% of goal`;}
+      else {st='s-bad';stT=`Behind · ${fmt(pctProj)}% of goal`;}
+    }
+    const hDays = left.filter(d=>d.w<1).length;
+    const paceTxt = `<div class="row"><span>Business days left</span><b>${left.length}${hDays?` (${hDays} holiday)`:''}</b></div>`;
+    return `<div class="cbox ${cls}">
+      <h3 style="color:${col}">${title}</h3>
+      <div class="small">Needed per day to hit goal</div>
+      <div class="big" style="color:${col}">${rem<=0?'0':fmt(holiLeft&&!normLeft?needH:needN,1)}</div>
+      ${holiLeft&&normLeft&&rem>0?`<div class="small">🎄 ${fmt(needH,1)}/day on Nov-Dec days</div>`:''}
+      <div class="prog"><i style="width:${Math.min(100,pctGoal)}%;background:${col}"></i></div>
+      <div class="row"><span>Goal</span><b>${fmt(goal)}</b></div>
+      <div class="row"><span>Admitted so far</span><b>${fmt(act)} (${fmt(pctGoal)}%)</b></div>
+      <div class="row"><span>Still needed</span><b>${fmt(Math.max(0,rem))}</b></div>
+      ${paceTxt}
+      <div class="row"><span>Projected finish</span><b>${entered&&Number.isFinite(proj)?fmt(proj):'-'}</b></div>
+      <span class="status ${st}">${stT}</span>
+    </div>`;
+  };
+  $('calcOut').innerHTML =
+    box('med','Medicare',g.med,aMed,'b-med','#2F6BFF') +
+    box('oth','Other Episodic',g.oth,aOth,'b-oth','#FF3E8A') +
+    box('tot','Total Episodic',g.tot,aMed+aOth,'b-tot','#8B3DFF');
+
+  $('note').innerHTML = `<b>How the pace works:</b> admits counted through ${new Date(asOf+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}. Nov-Dec business days are planned at ${Math.round(HOLIDAY_DIP*100)}% lower admit capacity, so the calculator asks a little more on regular days and a little less on holiday days. Projected finish = current pace carried through the remaining days, with the same holiday slowdown. Company holidays (New Year's, Memorial Day, July 4th, Labor Day, Thanksgiving + Friday, Christmas Eve + Day) and weekends are not counted.`;
+}
+
+fillPeriods();
+[bSel,pType].forEach(el=>el.addEventListener('change',()=>{ if(el===pType) fillPeriods(); render(); }));
+pVal.addEventListener('change',render);
+['aMed','aOth'].forEach(id=>$(id).addEventListener('input',()=>{ cleanNum($(id)); calc(); saveEntry(); }));
+$('asOf').addEventListener('change',()=>{ calc(); saveEntry(); });
+$('clearBtn').addEventListener('click',()=>{ delete SAVED[entryKey()]; persist(); loadEntry(); calc(); });
+render();
+</script>
+</body>
+</html>
